@@ -1,0 +1,57 @@
+<?php
+header('Content-Type: application/json');
+
+# DEBUG
+
+if (isset($_POST['usuariored'])) {
+    $_POST['usuariored'] = 'ivdelgadoga';
+}
+
+// $usuariored = $_POST['usuariored'] ?? 'ivdelgadoga';
+$usuariored = $_POST['usuariored'] ?? 'asaucedo';
+
+include('../../server/BD/_config/conexionBD.php');
+
+$conexion = new conexionBD();
+$con = $conexion->conectar();
+
+$sqlUsuario = "
+        SELECT 
+            NOMBRE || ' ' || APPATERNO || ' ' || APMATERNO AS NOMBRECOMPLETO, 
+            ESTADO,
+            PUESTO, 
+            SUCURSAL
+        FROM ATC_STAFF 
+        WHERE USUARIORED = :usuariored
+    ";
+
+$stmtUsuario = oci_parse($con, $sqlUsuario);
+
+oci_bind_by_name($stmtUsuario, ':usuariored', $usuariored);
+
+if (!oci_execute($stmtUsuario)) {
+
+    $error = oci_error($stmtUsuario);
+
+    throw new Exception($error['message']);
+}
+
+$datosUsuario = [];
+
+while ($fila = oci_fetch_assoc($stmtUsuario)) {
+
+    $datosUsuario[] = [
+
+        'nombre' => $fila['NOMBRECOMPLETO'],
+        'estado' => $fila['ESTADO'],
+        'puesto' => $fila['PUESTO'],
+        'sucursal' => $fila['SUCURSAL']
+    ];
+}
+
+oci_free_statement($stmtUsuario);
+
+echo json_encode([
+    'status' => 'success',
+    'datos' => array_values($datosUsuario)
+]);
