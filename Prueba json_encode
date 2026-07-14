@@ -8,3 +8,17 @@ echo json_encode([
 ]);
 
 exit;
+
+----------------------------------------------------------------------------------
+
+<?php
+
+header('Content-Type: application/json; charset=utf-8');
+
+# Muestra el formData completo
+
+echo json_encode([
+    'status' => 'success',
+    'mensaje' => 'ok',
+    'post' => $_POST
+]);
