@@ -1,0 +1,51 @@
+<?php
+
+header('Content-Type: application/json; charset=utf-8');
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+include("../../server/BD/_config/conexionBD.php");
+
+require_once("funciones/util.php");
+require_once("funciones/imagenes.php");
+require_once("funciones/rallys.php");
+
+try {
+
+    // DATOS
+
+    $idRally = intval($_POST["idRally"] ?? 0);
+    $nombrePodio = trim($_POST["nombrePodio"] ?? "");
+    $comentariosPodio = trim($_POST["comentariosPodio"] ?? "");
+    $ganadores = json_decode($_POST["ganadores"] ?? "[]", true);
+    $usuarioCreador = trim($_POST['usuario'] ?? '');
+    $fechaDocumento = date("d-m-Y H:i:s");
+    # Nuevo
+    $orden = intval($_POST['orden'] ?? 0);
+
+    echo "<pre>";
+
+    echo "=== \$_POST ===\n";
+
+    print_r($_POST);
+
+    echo "\n=== \$_FILES ===\n";
+
+    print_r($_FILES);
+
+    echo "\n=== Variables ===\n";
+
+    var_dump([
+        "idRally"           => $idRally,
+        "nombrePodio"       => $nombrePodio,
+        "comentariosPodio"  => $comentariosPodio,
+        "usuarioCreador"    => $usuarioCreador,
+        "orden"             => $orden,
+        "ganadores"         => $ganadores,
+    ]);
+
+    echo "</pre>";
+
+    exit;
